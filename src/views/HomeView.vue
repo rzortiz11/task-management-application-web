@@ -20,6 +20,8 @@ const handleLogout = async () => {
 const tasks = ref([]);
 const task = ref({ id: "", title: "", description: "", status: "pending", due_date: "", assigned_to: "" });
 const filterStatus = ref("");
+const filterTitle = ref("");  // NEW: Title search filter
+const filterAssignedTo = ref(""); // NEW: Assigned To filter
 const editMode = ref(false);
 const currentPage = ref(1);
 const totalPages = ref(1);
@@ -43,9 +45,12 @@ const fetchUsers = () => {
 };
 
 // Fetch Tasks
+// Fetch Tasks with Filters
 const fetchTasks = () => {
   let url = `${API_URL}?page=${currentPage.value}&per_page=${perPage.value}`;
   if (filterStatus.value) url += `&status=${filterStatus.value}`;
+  if (filterTitle.value) url += `&title=${encodeURIComponent(filterTitle.value)}`; // NEW: Title filter
+  if (filterAssignedTo.value) url += `&assigned_to=${filterAssignedTo.value}`; // NEW: Assigned To filter
 
   $.ajax({
     url,
@@ -58,6 +63,7 @@ const fetchTasks = () => {
     error: (err) => console.error("Error fetching tasks:", err),
   });
 };
+
 
 // Submit Task (Create / Update)
 const submitTask = () => (editMode.value ? updateTask() : createTask());
@@ -164,16 +170,23 @@ onMounted(() => {
     </div>
 
     <!-- Filter by Status -->
-    <div class="mb-3">
-      <label for="statusFilter">Filter by Status:</label>
-      <select v-model="filterStatus" class="form-select" @change="fetchTasks">
-        <option value="">All</option>
-        <option value="pending">Pending</option>
-        <option value="in_progress">In Progress</option>
-        <option value="completed">Completed</option>
-        <option value="cancelled">Cancelled</option>
-      </select>
-    </div>
+  <div class="form-row">
+  <input type="text" v-model="filterTitle" placeholder="Search by Title" class="form-control" @input="fetchTasks" />
+
+  <select v-model="filterStatus" class="form-control" @change="fetchTasks">
+    <option value="">All Statuses</option>
+    <option value="pending">Pending</option>
+    <option value="in_progress">In Progress</option>
+    <option value="completed">Completed</option>
+    <option value="cancelled">Cancelled</option>
+  </select>
+
+  <select v-model="filterAssignedTo" class="form-control" @change="fetchTasks">
+    <option value="">All Users</option>
+    <option v-for="user in users" :key="user.user_id" :value="user.user_id">{{ user.name }}</option>
+  </select>
+</div>
+
 
 
     <!-- Task List -->
@@ -189,10 +202,10 @@ onMounted(() => {
         </tr>
       </thead>
       <tbody>
-        <tr v-for="t in tasks" :key="t.id">
+        <tr v-for="t in tasks" :key="t.task_id">
           <td>{{ t.title }}</td>
           <td>{{ t.description }}</td>
-          <td>{{ t.assigned_to }}</td>
+          <td>{{ t.name }}</td>
           <td>{{ t.due_date }}</td>
           <td>{{ t.status }}</td>
           <td>
