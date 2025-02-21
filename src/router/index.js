@@ -1,23 +1,48 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import { createRouter, createWebHistory } from 'vue-router';
+import HomeView from '../views/HomeView.vue';
+import LoginView from '../views/LoginView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
+      path: '/home',
       name: 'home',
       component: HomeView,
+      meta: { requiresAuth: true }, 
     },
     {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue'),
+      path: '/login',
+      name: 'login',
+      component: LoginView,
+    },
+    {
+      path: '/',
+      redirect: '/home', 
     },
   ],
-})
+});
 
-export default router
+// Add navigation guard
+router.beforeEach((to, from, next) => {
+  const token = localStorage.getItem("accessToken");
+  const user = localStorage.getItem("user");
+
+  console.log("Stored Token:", token);
+  console.log("User:", user);
+
+  if (to.meta.requiresAuth) {
+    if (!token) {
+      console.log("No token found, redirecting to login.");
+      return next("/login");
+    }
+  }
+
+  if (token && to.path === "/login") {
+    console.log("User  is logged in, redirecting to home.");
+    return next("/home");
+  }
+
+  next();
+});
+export default router;
