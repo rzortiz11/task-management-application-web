@@ -17,27 +17,11 @@ npm install
 ```
 
 ### Compile and Hot-Reload for Development
+ - update the .env
+   ex. VITE_API_BASE_URL=http://127.0.0.1:8080/api
 
 ```sh
 npm run dev
 ```
+visit : http://localhost:5174/login
 
-### Compile and Minify for Production
-
-```sh
-npm run build
-```
-
-### Compile and Minify for Production
- - update the .env
-   ex. VITE_API_BASE_URL=http://127.0.0.1:8000/api
-
- ##Deliverables: 
-   - Git Repository:
-     - Backend Repo - https://github.com/ZerrudOrtiz/task-management-application
-     - Frontend Repo -  https://github.com/ZerrudOrtiz/task-management-application-web
-   - SQL Script for Database Schema:
-     - Configure database credentials in .env
-   - Run: sail artisan migrate
-     -Unit Tests for the API:
-     - Run: sail artisan test
