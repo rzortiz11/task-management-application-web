@@ -3,15 +3,16 @@ import { ref } from "vue";
 import { useAuthStore } from "@/stores/auth";
 import { useRouter } from "vue-router";
 
-const email = ref("admin@taskmangement.ph");
+const name = ref("test");
+const email = ref("@gmail.com");
 const password = ref("");
 const errorMessage = ref(null);
 const authStore = useAuthStore();
 const router = useRouter();
 
-const login = async () => {
+const register = async () => {
   try {
-    const success = await authStore.login(email.value, password.value);
+    const success = await authStore.register(name.value, email.value, password.value);
     if (success) {
       router.push("/home");
     }
@@ -20,33 +21,36 @@ const login = async () => {
   }
 };
 
-const goToRegister = () => {
-  router.push("/register");
+const goToLogin = () => {
+  router.push("/login");
 };
 </script>
 
 <template>
-  <div class="login-container">
-    <h2>Login</h2>
-    <form @submit.prevent="login">
+  <div class="register-container">
+    <h2>Register</h2>
+    <form @submit.prevent="register">
+      <label>Name:</label>
+      <input type="text" v-model="name" required />
+
       <label>Email:</label>
       <input type="email" v-model="email" required />
 
       <label>Password:</label>
       <input type="password" v-model="password" required />
 
-      <button type="submit">Login</button>
+      <button type="submit">Register</button>
     </form>
     <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
     <p>
-      Don't have an account?
-      <button @click="goToRegister" class="link-btn">Register here</button>
+      Already have an account?
+      <button @click="goToLogin" class="link-btn">Login here</button>
     </p>
   </div>
 </template>
 
 <style scoped>
-.login-container {
+.register-container {
   grid-column: 1 / -1;
   max-width: 300px;
   margin: auto;

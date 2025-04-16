@@ -49,5 +49,25 @@ export const useAuthStore = defineStore("auth", {
         console.error("Logout failed:", error);
       }
     },
+
+    async register(name, email, password) {
+      try {
+        const response = await api.post("/auth/register", { name, email, password });
+        const token = response.data.accessToken;
+
+        if (!token) throw new Error("Registration failed: No access token received.");
+
+        this.token = token;
+        this.user = response.data.user;
+
+        localStorage.setItem("accessToken", this.token);
+        localStorage.setItem("user", JSON.stringify(this.user));
+        api.defaults.headers.common["Authorization"] = `Bearer ${this.token}`;
+
+        return true;
+      } catch (error) {
+        throw new Error(error.response?.data?.message || "Registration failed");
+      }
+    },
   },
 });
