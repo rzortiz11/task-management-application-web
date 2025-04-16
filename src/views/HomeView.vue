@@ -18,7 +18,7 @@ const handleLogout = async () => {
 
 // Task Management State
 const tasks = ref([]);
-const task = ref({ id: "", title: "", description: "", status: "pending", due_date: "", assigned_to: "" });
+const task = ref({ id: "", title: "", description: "", status: "pending", due_date: "", user_id: "" , order: "", priority: "low"});
 const filterStatus = ref("");
 const filterTitle = ref("");  // NEW: Title search filter
 const filterAssignedTo = ref(""); // NEW: Assigned To filter
@@ -50,7 +50,7 @@ const fetchTasks = () => {
   let url = `${API_URL}?page=${currentPage.value}&per_page=${perPage.value}`;
   if (filterStatus.value) url += `&status=${filterStatus.value}`;
   if (filterTitle.value) url += `&title=${encodeURIComponent(filterTitle.value)}`; // NEW: Title filter
-  if (filterAssignedTo.value) url += `&assigned_to=${filterAssignedTo.value}`; // NEW: Assigned To filter
+  if (filterAssignedTo.value) url += `&user_id=${filterAssignedTo.value}`; // NEW: Assigned To filter
 
   $.ajax({
     url,
@@ -119,7 +119,7 @@ const deleteTask = (id) => {
 
 // Reset Form
 const resetForm = () => {
-  task.value = { id: "", title: "", description: "", status: "pending", due_date: "", assigned_to: "" };
+  task.value = { id: "", title: "", description: "", status: "pending", due_date: "", user_id: "", order: "", priority: "low" };
   editMode.value = false;
 };
 
@@ -152,7 +152,7 @@ onMounted(() => {
         <div class="form-row">
           <input type="text" v-model="task.title" placeholder="Title" required class="form-control" />
           <textarea v-model="task.description" placeholder="Description" class="form-control"></textarea>
-          <select v-model="task.assigned_to" class="form-control" required>
+          <select v-model="task.user_id" class="form-control" required>
             <option value="">Select User</option>
             <option v-for="user in users" :key="user.user_id" :value="user.user_id">{{ user.name }}</option>
           </select>
@@ -163,6 +163,12 @@ onMounted(() => {
             <option value="completed">Completed</option>
             <option value="cancelled">Cancelled</option>
           </select>
+          <select v-model="task.priority" class="form-control">
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+          </select>
+          <input type="text" v-model="task.order" class="form-control" required />
           <button type="submit" class="btn btn-primary">{{ editMode ? "Update" : "Create" }}</button>
           <button v-if="editMode" @click="resetForm" class="btn btn-secondary">Cancel</button>
         </div>
@@ -198,6 +204,8 @@ onMounted(() => {
           <th>Assigned To</th>
           <th>Due Date</th>
           <th>Status</th>
+          <th>Priority</th>
+          <th>Order</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -208,6 +216,8 @@ onMounted(() => {
           <td>{{ t.name }}</td>
           <td>{{ t.due_date }}</td>
           <td>{{ t.status }}</td>
+          <td>{{ t.priority }}</td>
+          <td>{{ t.order }}</td>
           <td>
             <button @click="editTask(t)" class="btn btn-warning">Edit</button>
             <button @click="deleteTask(t.task_id)" class="btn btn-danger">Delete</button>
