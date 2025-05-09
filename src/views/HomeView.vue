@@ -155,23 +155,23 @@ onMounted(() => {
     </div>
 
 
-<div v-if="showModal" class="modal-overlay">
+    <div v-if="showModal" class="modal-overlay">
   <div class="modal-content">
     <h4>{{ editMode ? "Edit Task" : "Create Task" }}</h4>
     <form @submit.prevent="submitTask">
       <div class="form-row">
-        <div class="form-group col-12">
+        <div class="form-group full-width">
           <label for="taskTitle">Title</label>
           <input id="taskTitle" type="text" v-model="task.title" placeholder="Title" required class="form-control" />
         </div>
 
-        <div class="form-group col-12">
+        <div class="form-group full-width">
           <label for="taskDescription">Description</label>
           <textarea id="taskDescription" v-model="task.description" placeholder="Description" class="form-control"></textarea>
         </div>
 
-        <div class="form-row col-12">
-          <div class="form-group col-6">
+        <div class="form-row">
+          <div class="form-group half-width">
             <label for="taskUser">Assign User</label>
             <select id="taskUser" v-model="task.user_id" class="form-control" required>
               <option value="">Select User</option>
@@ -179,12 +179,12 @@ onMounted(() => {
             </select>
           </div>
 
-          <div class="form-group col-6">
+          <div class="form-group half-width">
             <label for="taskDueDate">Due Date</label>
             <input id="taskDueDate" type="date" v-model="task.due_date" class="form-control" required />
           </div>
 
-          <div class="form-group col-6">
+          <div class="form-group half-width">
             <label for="taskStatus">Status</label>
             <select id="taskStatus" v-model="task.status" class="form-control">
               <option value="todo">To Do</option>
@@ -193,7 +193,7 @@ onMounted(() => {
             </select>
           </div>
 
-          <div class="form-group col-6">
+          <div class="form-group half-width">
             <label for="taskPriority">Priority</label>
             <select id="taskPriority" v-model="task.priority" class="form-control">
               <option value="low">Low</option>
@@ -203,7 +203,7 @@ onMounted(() => {
           </div>
         </div>
 
-        <div class="form-group col-12">
+        <div class="form-group full-width">
           <label for="taskOrder">Order</label>
           <input id="taskOrder" type="text" v-model="task.order" class="form-control" placeholder="Order" required />
         </div>
@@ -216,7 +216,6 @@ onMounted(() => {
     </form>
   </div>
 </div>
-
 
   <div class="form-row">
   <input type="text" v-model="filterTitle" placeholder="Search by Title" class="form-control" @input="fetchTasks" />
@@ -471,4 +470,13 @@ label {
   justify-content: space-between;
   margin-top: 15px;
 }
+
+.full-width {
+  width: 100%;
+}
+
+.half-width {
+  width: 48%;
+}
+
 </style>
